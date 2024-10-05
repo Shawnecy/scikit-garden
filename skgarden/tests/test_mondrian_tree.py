@@ -8,9 +8,8 @@ import numpy as np
 from sklearn.base import clone
 from sklearn.base import ClassifierMixin
 from sklearn.base import RegressorMixin
-from sklearn.datasets import load_boston
+from sklearn.datasets import fetch_california_housing
 from sklearn.datasets import load_iris
-from sklearn.datasets import make_classification
 from sklearn.datasets import make_regression
 from sklearn.metrics import mean_squared_error
 from sklearn.preprocessing import LabelBinarizer
@@ -117,11 +116,11 @@ def test_tree_predict():
                 [[1.0, 0.0], [0.0, 1.0], last], 4)
 
 
-def test_reg_boston():
-    """Consistency on boston house prices"""
+def test_reg_california():
+    """Consistency on California house prices"""
     mtr = MondrianTreeRegressor(random_state=0)
-    boston = load_boston()
-    X, y = boston.data, boston.target
+    california = fetch_california_housing()
+    X, y = california.data, california.target
     mtr.fit(X, y)
     score = mean_squared_error(mtr.predict(X), y)
     assert score < 1, "Failed with score = {0}".format(score)
@@ -246,9 +245,9 @@ def test_dimension_location():
         assert_array_almost_equal(thresh_act, thresh_sim, 1)
 
 
-def load_scaled_boston():
-    boston = load_boston()
-    X, y = boston.data, boston.target
+def load_scaled_california():
+    california = fetch_california_housing()
+    X, y = california.data, california.target
     n_train = 400
     n_test = 400
     X_train, y_train = X[:n_train], y[:n_train]
@@ -274,7 +273,7 @@ def test_weighted_decision_path_train():
     """
     # Test that when all samples are in the training data all weights
     # should be concentrated at the leaf.
-    X_train, _, y_train, _ = load_scaled_boston()
+    X_train, _, y_train, _ = load_scaled_california()
     y_train = np.round(y_train)
     for est in estimators:
         clone_est = clone(est)
@@ -310,7 +309,7 @@ def check_weighted_decision_path_regression(mtr, X_test):
 
 
 def test_weighted_decision_path_regression():
-    X_train, X_test, y_train, y_test = load_scaled_boston()
+    X_train, X_test, y_train, y_test = load_scaled_california()
     mtr = MondrianTreeRegressor(random_state=0)
     mtr.fit(X_train, y_train)
     check_weighted_decision_path_regression(mtr, X_test)
@@ -336,7 +335,7 @@ def check_weighted_decision_path_classif(mtc, X_test):
 
 
 def test_weighted_decision_path_classif():
-    X_train, X_test, y_train, y_test = load_scaled_boston()
+    X_train, X_test, y_train, y_test = load_scaled_california()
     y_train = np.round(y_train)
     y_test = np.round(y_test)
 
@@ -385,7 +384,7 @@ def check_mean_std_reg_convergence(est, X_train, y_train):
 
 
 def test_mean_std_reg_convergence():
-    X_train, _, y_train, _ = load_scaled_boston()
+    X_train, _, y_train, _ = load_scaled_california()
     mr = MondrianTreeRegressor(random_state=0)
     mr.fit(X_train, y_train)
     check_mean_std_reg_convergence(mr, X_train, y_train)
@@ -419,7 +418,7 @@ def check_proba_classif_convergence(X_train, y_train, mc):
 
 
 def test_proba_classif_convergence():
-    X_train, _, y_train, _ = load_scaled_boston()
+    X_train, _, y_train, _ = load_scaled_california()
     y_train = np.round(y_train)
     mc = MondrianTreeClassifier(random_state=0)
     mc.fit(X_train, y_train)
@@ -463,7 +462,7 @@ def test_tree_attributes():
 
 
 def test_apply():
-    X_train, X_test, y_train, y_test = load_scaled_boston()
+    X_train, X_test, y_train, y_test = load_scaled_california()
     y_train = np.round(y_train)
     for est in estimators:
         est_clone = clone(est)
@@ -490,7 +489,7 @@ def check_pickle(est, X, y):
 
 
 def test_pickle():
-    X, _, y, _ = load_scaled_boston()
+    X, _, y, _ = load_scaled_california()
     y = np.round(y)
 
     for est in estimators:

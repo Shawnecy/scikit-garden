@@ -92,9 +92,8 @@ class BaseTreeQuantileRegressor(BaseDecisionTree):
         # apply method requires X to be of dtype np.float32
         X, y = check_X_y(
             X, y, accept_sparse="csc", dtype=np.float32, multi_output=False)
-        super(BaseTreeQuantileRegressor, self).fit(
-            X, y, sample_weight=sample_weight, check_input=check_input,
-            X_idx_sorted=X_idx_sorted)
+        super(BaseTreeQuantileRegressor, self)._fit(
+            X, y, sample_weight=sample_weight, check_input=check_input)
         self.y_train_ = y
 
         # Stores the leaf nodes that the samples lie in.
@@ -102,18 +101,15 @@ class BaseTreeQuantileRegressor(BaseDecisionTree):
         return self
 
 
-class DecisionTreeQuantileRegressor(DecisionTreeRegressor, BaseTreeQuantileRegressor):
+class DecisionTreeQuantileRegressor(BaseTreeQuantileRegressor, DecisionTreeRegressor):
     """A decision tree regressor that provides quantile estimates.
 
     Parameters
     ----------
-    criterion : string, optional (default="mse")
+    criterion : string, optional (default="squared_error")
         The function to measure the quality of a split. Supported criteria
-        are "mse" for the mean squared error, which is equal to variance
-        reduction as feature selection criterion, and "mae" for the mean
-        absolute error.
-        .. versionadded:: 0.18
-           Mean Absolute Error (MAE) criterion.
+        "squared_error", "friedman_mse", and "poisson".
+        .. versionchanged:: 0.2
 
     splitter : string, optional (default="best")
         The strategy used to choose the split at each node. Supported
@@ -202,7 +198,7 @@ class DecisionTreeQuantileRegressor(DecisionTreeRegressor, BaseTreeQuantileRegre
         y_train_leaves_[i] is the leaf that y_train[i] ends up at.
     """
     def __init__(self,
-                 criterion="mse",
+                 criterion="squared_error",
                  splitter="best",
                  max_depth=None,
                  min_samples_split=2,
@@ -223,15 +219,15 @@ class DecisionTreeQuantileRegressor(DecisionTreeRegressor, BaseTreeQuantileRegre
             random_state=random_state)
 
 
-class ExtraTreeQuantileRegressor(ExtraTreeRegressor, BaseTreeQuantileRegressor):
+class ExtraTreeQuantileRegressor(BaseTreeQuantileRegressor, ExtraTreeRegressor):
     def __init__(self,
-                 criterion='mse',
+                 criterion='squared_error',
                  splitter='random',
                  max_depth=None,
                  min_samples_split=2,
                  min_samples_leaf=1,
                  min_weight_fraction_leaf=0.0,
-                 max_features='auto',
+                 max_features=None,
                  random_state=None,
                  max_leaf_nodes=None):
         super(ExtraTreeQuantileRegressor, self).__init__(

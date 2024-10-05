@@ -1,12 +1,13 @@
 import numpy as np
 from scipy import sparse
 from sklearn.base import ClassifierMixin
-from sklearn.exceptions import NotFittedError
+from sklearn.exceptions import NotFittedError, DataConversionWarning
 from sklearn.preprocessing import LabelEncoder
 from sklearn.utils import check_random_state
 from sklearn.utils.validation import check_array
 from sklearn.utils.validation import check_X_y
 from joblib import delayed, Parallel
+from warnings import warn
 
 from ..tree import MondrianTreeClassifier
 from ..tree import MondrianTreeRegressor
@@ -165,7 +166,7 @@ class MondrianForestRegressor(ForestRegressor, BaseMondrian):
                  random_state=None,
                  verbose=0):
         super(MondrianForestRegressor, self).__init__(
-            base_estimator=MondrianTreeRegressor(),
+            estimator=MondrianTreeRegressor(),
             n_estimators=n_estimators,
             estimator_params=("max_depth", "min_samples_split",
                               "random_state"),
@@ -323,7 +324,7 @@ class MondrianForestClassifier(ForestClassifier, BaseMondrian):
                  random_state=None,
                  verbose=0):
         super(MondrianForestClassifier, self).__init__(
-            base_estimator=MondrianTreeClassifier(),
+            estimator=MondrianTreeClassifier(),
             n_estimators=n_estimators,
             estimator_params=("max_depth", "min_samples_split",
                               "random_state"),

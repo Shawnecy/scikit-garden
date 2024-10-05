@@ -29,6 +29,7 @@ from sklearn.base import BaseEstimator
 from sklearn.base import ClassifierMixin
 from sklearn.base import RegressorMixin
 from sklearn.preprocessing import LabelEncoder
+from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor, ExtraTreeClassifier, ExtraTreeRegressor
 from sklearn.utils import check_random_state
 from sklearn.utils import compute_sample_weight
 from sklearn.utils.multiclass import check_classification_targets
@@ -60,7 +61,7 @@ DTYPE = _tree.DTYPE
 DOUBLE = _tree.DOUBLE
 
 CRITERIA_CLF = {"classification": _criterion.ClassificationCriterion}
-CRITERIA_REG = {"mse": _criterion.MSE}
+CRITERIA_REG = {"squared_error": _criterion.MSE}
 
 SPLITTERS = {"mondrian": _splitter.MondrianSplitter}
 
@@ -121,7 +122,7 @@ class BaseDecisionTree(six.with_metaclass(ABCMeta, BaseEstimator)):
             if self.class_weight is not None:
                 y_original = np.copy(y)
 
-            y_encoded = np.zeros(y.shape, dtype=np.int)
+            y_encoded = np.zeros(y.shape, dtype=int)
             for k in range(self.n_outputs_):
                 classes_k, y_encoded[:, k] = np.unique(y[:, k],
                                                        return_inverse=True)
@@ -481,7 +482,7 @@ class MondrianTreeRegressor(BaseMondrianTree, RegressorMixin):
                  min_samples_split=2,
                  random_state=None):
         super(MondrianTreeRegressor, self).__init__(
-            criterion="mse",
+            criterion="squared_error",
             splitter="mondrian",
             max_depth=max_depth,
             min_samples_split=min_samples_split,

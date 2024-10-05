@@ -1,5 +1,5 @@
 import numpy as np
-from sklearn.datasets import load_boston
+from sklearn.datasets import fetch_california_housing
 from sklearn.model_selection import train_test_split
 from numpy.testing import assert_array_almost_equal
 
@@ -7,8 +7,8 @@ from skgarden.quantile import DecisionTreeQuantileRegressor
 from skgarden.quantile import ExtraTreeQuantileRegressor
 from skgarden.quantile.utils import weighted_percentile
 
-boston = load_boston()
-X, y = boston.data, boston.target
+california = fetch_california_housing()
+X, y = california.data, california.target
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, train_size=0.6, test_size=0.4, random_state=0)
 X_train = np.array(X_train, dtype=np.float32)

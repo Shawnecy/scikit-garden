@@ -12,7 +12,7 @@ URL = 'https://github.com/scikit-garden/scikit-garden'
 MAINTAINER = 'Manoj Kumar'
 MAINTAINER_EMAIL = 'mks542@nyu.edu'
 LICENSE = 'new BSD'
-VERSION = '0.1.3'
+VERSION = '0.1.4'
 
 libraries = []
 if os.name == 'posix':
@@ -71,8 +71,17 @@ if __name__ == "__main__":
               'Operating System :: POSIX',
               'Operating System :: Unix',
               'Operating System :: MacOS'
-            ],
-          install_requires=["numpy", "scipy", "scikit-learn>=0.22", "six"],
-          setup_requires=["Cython>=0.23", "numpy", "setuptools>=18"],
+          ],
+          install_requires=[
+              "numpy==2.1.1",
+              "scipy==1.14.1",
+              "scikit-learn==1.5.2",
+              "six==1.16.0",
+              "joblib==1.4.2"
+          ],
+          setup_requires=["Cython>=3.0.11", "numpy==2.1.1", "setuptools==75.1.0"],
+          extras_require={
+              'dev': ['pytest==8.3.3']
+          },
           ext_modules=extensions,
-          )
+    )

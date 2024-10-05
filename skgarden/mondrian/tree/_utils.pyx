@@ -85,7 +85,7 @@ cdef inline double rand_uniform(double low, double high,
 cdef inline double log(double x) nogil:
     return ln(x) / ln(2.0)
 
-cdef inline int rand_multinomial(DTYPE_t* pvals, SIZE_t n_features,
+cdef inline SIZE_t rand_multinomial(DTYPE_t* pvals, SIZE_t n_features,
                                  UINT32_t* random_state) nogil:
     """Sample n=1 from a multinomial where pvals is not normalized and cumulative"""
     cdef double search

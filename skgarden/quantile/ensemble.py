@@ -1,8 +1,6 @@
 from __future__ import division
 import numpy as np
 from numpy import ma
-from sklearn.ensemble import ExtraTreesRegressor
-from sklearn.ensemble import RandomForestRegressor
 from sklearn.utils import check_array
 from sklearn.utils import check_random_state
 from sklearn.utils import check_X_y
@@ -39,7 +37,7 @@ def generate_sample_indices(random_state, n_samples):
 
 
 class BaseForestQuantileRegressor(ForestRegressor):
-    def fit(self, X, y):
+    def fit(self, X, y, sample_weight=None):
         """
         Build a forest from the training set (X, y).
 
@@ -132,7 +130,6 @@ class BaseForestQuantileRegressor(ForestRegressor):
 
         sorter = np.argsort(self.y_train_)
         X_leaves = self.apply(X)
-        weights = np.zeros((X.shape[0], len(self.y_train_)))
         quantiles = np.zeros((X.shape[0]))
         for i, x_leaf in enumerate(X_leaves):
             mask = self.y_train_leaves_ != np.expand_dims(x_leaf, 1)
@@ -159,13 +156,10 @@ class RandomForestQuantileRegressor(BaseForestQuantileRegressor):
     n_estimators : integer, optional (default=10)
         The number of trees in the forest.
 
-    criterion : string, optional (default="mse")
+    criterion : string, optional (default="squared_error")
         The function to measure the quality of a split. Supported criteria
-        are "mse" for the mean squared error, which is equal to variance
-        reduction as feature selection criterion, and "mae" for the mean
-        absolute error.
-        .. versionadded:: 0.18
-           Mean Absolute Error (MAE) criterion.
+        "squared_error", "friedman_mse", and "poisson".
+        .. versionchanged:: 0.2
 
     max_features : int, float, string or None, optional (default="auto")
         The number of features to consider when looking for the best split:
@@ -279,12 +273,12 @@ class RandomForestQuantileRegressor(BaseForestQuantileRegressor):
     """
     def __init__(self,
                  n_estimators=10,
-                 criterion='mse',
+                 criterion='squared_error',
                  max_depth=None,
                  min_samples_split=2,
                  min_samples_leaf=1,
                  min_weight_fraction_leaf=0.0,
-                 max_features='auto',
+                 max_features=None,
                  max_leaf_nodes=None,
                  bootstrap=True,
                  oob_score=False,
@@ -293,7 +287,7 @@ class RandomForestQuantileRegressor(BaseForestQuantileRegressor):
                  verbose=0,
                  warm_start=False):
         super(RandomForestQuantileRegressor, self).__init__(
-            base_estimator=DecisionTreeQuantileRegressor(),
+            estimator=DecisionTreeQuantileRegressor(),
             n_estimators=n_estimators,
             estimator_params=("criterion", "max_depth", "min_samples_split",
                               "min_samples_leaf", "min_weight_fraction_leaf",
@@ -329,13 +323,10 @@ class ExtraTreesQuantileRegressor(BaseForestQuantileRegressor):
     n_estimators : integer, optional (default=10)
         The number of trees in the forest.
 
-    criterion : string, optional (default="mse")
+    criterion : string, optional (default="squared_error")
         The function to measure the quality of a split. Supported criteria
-        are "mse" for the mean squared error, which is equal to variance
-        reduction as feature selection criterion, and "mae" for the mean
-        absolute error.
-        .. versionadded:: 0.18
-           Mean Absolute Error (MAE) criterion.
+        "squared_error", "friedman_mse", and "poisson".
+        .. versionchanged:: 0.2
 
     max_features : int, float, string or None, optional (default="auto")
         The number of features to consider when looking for the best split:
@@ -444,16 +435,16 @@ class ExtraTreesQuantileRegressor(BaseForestQuantileRegressor):
     References
     ----------
     .. [1] Nicolai Meinshausen, Quantile Regression Forests
-        http://www.jmlr.org/papers/volume7/meinshausen06a/meinshausen06a.pdf
+        https://www.jmlr.org/papers/volume7/meinshausen06a/meinshausen06a.pdf
     """
     def __init__(self,
                  n_estimators=10,
-                 criterion='mse',
+                 criterion='squared_error',
                  max_depth=None,
                  min_samples_split=2,
                  min_samples_leaf=1,
                  min_weight_fraction_leaf=0.0,
-                 max_features='auto',
+                 max_features=None,
                  max_leaf_nodes=None,
                  bootstrap=True,
                  oob_score=False,
@@ -462,7 +453,7 @@ class ExtraTreesQuantileRegressor(BaseForestQuantileRegressor):
                  verbose=0,
                  warm_start=False):
         super(ExtraTreesQuantileRegressor, self).__init__(
-            base_estimator=ExtraTreeQuantileRegressor(),
+            estimator=ExtraTreeQuantileRegressor(),
             n_estimators=n_estimators,
             estimator_params=("criterion", "max_depth", "min_samples_split",
                               "min_samples_leaf", "min_weight_fraction_leaf",

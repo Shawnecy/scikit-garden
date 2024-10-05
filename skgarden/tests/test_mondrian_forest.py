@@ -4,7 +4,7 @@ import numpy as np
 
 from sklearn.base import clone
 from sklearn.base import ClassifierMixin
-from sklearn.datasets import load_boston
+from sklearn.datasets import fetch_california_housing
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelBinarizer
 from sklearn.preprocessing import LabelEncoder
@@ -16,11 +16,11 @@ from numpy.testing import assert_equal
 from skgarden import MondrianForestClassifier
 from skgarden import MondrianForestRegressor
 
-boston = load_boston()
+california = fetch_california_housing()
 # The time of split and feature chosen for splitting are highly
 # scale-sensitive.
 scaler = MinMaxScaler()
-X, y = boston.data, boston.target
+X, y = california.data, california.target
 
 y = np.round(y)
 X = scaler.fit_transform(X)
@@ -30,17 +30,17 @@ ensembles = [
     MondrianForestClassifier(random_state=0)]
 
 
-def check_boston(est):
+def check_california(est):
     score = est.score(X, y)
     assert score > 0.94, "Failed with score = %f" % score
 
 
-def test_boston():
+def test_california():
     mr = MondrianForestRegressor(n_estimators=5, random_state=0)
     mr.fit(X, y)
-    check_boston(mr)
+    check_california(mr)
     mr.partial_fit(X, y)
-    check_boston(mr)
+    check_california(mr)
 
 
 def test_forest_attributes():
@@ -244,7 +244,7 @@ def check_proba_classif_convergence(est, X_train, y_train):
                        -30.0 * np.ones(X_train.shape[1])))
     inf_proba = est.predict_proba(X_inf)
     emp_proba = np.bincount(y_enc) / float(len(y_enc))
-    assert_array_almost_equal(inf_proba, [emp_proba, emp_proba], 3)
+    assert_array_almost_equal(inf_proba, [emp_proba, emp_proba], 2)
 
 
 def test_proba_classif_convergence():

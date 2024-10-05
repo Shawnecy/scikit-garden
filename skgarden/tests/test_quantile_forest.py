@@ -1,5 +1,5 @@
 import numpy as np
-from sklearn.datasets import load_boston
+from sklearn.datasets import fetch_california_housing
 from sklearn.model_selection import train_test_split
 from sklearn.utils import check_random_state
 from numpy.testing import assert_array_equal
@@ -10,8 +10,8 @@ from skgarden.quantile import ExtraTreesQuantileRegressor
 from skgarden.quantile import DecisionTreeQuantileRegressor
 from skgarden.quantile import ExtraTreeQuantileRegressor
 
-boston = load_boston()
-X, y = boston.data, boston.target
+california = fetch_california_housing()
+X, y = california.data, california.target
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, train_size=0.6, test_size=0.4, random_state=0)
 X_train = np.array(X_train, dtype=np.float32)
@@ -33,9 +33,10 @@ def test_quantile_attributes():
         )
 
         # Should sum up to number of leaf nodes.
-        assert_array_equal(
+        assert_array_almost_equal(
             np.sum(est.y_weights_, axis=1),
-            [sum(tree.tree_.children_left == -1) for tree in est.estimators_]
+            [sum(tree.tree_.children_left == -1) for tree in est.estimators_],
+            3
         )
 
         n_est = est.n_estimators

@@ -145,7 +145,7 @@ cdef class PartialFitTreeBuilder(TreeBuilder):
         # Allocate memory for tree.
         cdef int init_capacity
         if tree.max_depth <= 10:
-            init_capacity = (2 ** (tree.max_depth + 1)) - 1
+            init_capacity = <int>((2 ** (tree.max_depth + 1)) - 1)
             tree._resize(init_capacity)
 
         cdef np.ndarray X_ndarray = X
@@ -196,7 +196,7 @@ cdef class DepthFirstTreeBuilder(TreeBuilder):
         # Initial capacity
         cdef int init_capacity
         if tree.max_depth <= 10:
-            init_capacity = (2 ** (tree.max_depth + 1)) - 1
+            init_capacity = <int>((2 ** (tree.max_depth + 1)) - 1)
         else:
             init_capacity = 2047
         tree._resize(init_capacity)
@@ -1216,7 +1216,7 @@ cdef class Tree:
         cdef np.ndarray arr
         arr = np.PyArray_SimpleNewFromData(3, shape, np.NPY_DOUBLE, self.value)
         Py_INCREF(self)
-        arr.base = <PyObject*> self
+        np.set_array_base(arr, self)
         return arr
 
     cdef np.ndarray _get_node_ndarray(self):
@@ -1236,5 +1236,5 @@ cdef class Tree:
                                    strides, <void*> self.nodes,
                                    np.NPY_DEFAULT, None)
         Py_INCREF(self)
-        arr.base = <PyObject*> self
+        np.set_array_base(arr, self)
         return arr
