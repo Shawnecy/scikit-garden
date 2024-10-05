@@ -206,7 +206,7 @@ class MondrianForestRegressor(ForestRegressor, BaseMondrian):
         return super(MondrianForestRegressor, self).fit(X, y)
 
     def predict(self, X, return_std=False):
-        """
+        r"""
         Returns the predicted mean and std.
 
         The prediction is a GMM drawn from
@@ -285,7 +285,7 @@ class MondrianForestRegressor(ForestRegressor, BaseMondrian):
 
 
 class MondrianForestClassifier(ForestClassifier, BaseMondrian):
-    """
+    r"""
     A MondrianForestClassifier is an ensemble of MondrianTreeClassifiers.
 
     The probability \(p_{j}\) of class \(j\) is given
