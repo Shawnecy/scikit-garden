@@ -189,10 +189,9 @@ def _concat(header, docstring):
 
 def _function_header(subpackage, func):
     """Generate the docstring of a function."""
-    args = inspect.formatargspec(*inspect.getfullargspec(func))
-    return "{name}{args}".format(name=_full_name(subpackage, func),
-                                   args=args,
-                                   )
+    sig = inspect.signature(func)
+    args = str(sig)
+    return f"{_full_name(subpackage, func)}{args}"
 
 
 def _doc_function(subpackage, func):

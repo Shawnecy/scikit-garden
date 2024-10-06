@@ -1,6 +1,6 @@
 site_name: Scikit-garden
 site_description: 'Documentation for scikit-garden'
-pages:
+nav:
   - Home: 'index.md'
   - API Reference: 'api.md'
   - Examples:
