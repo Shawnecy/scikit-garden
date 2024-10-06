@@ -202,11 +202,12 @@ def _doc_function(subpackage, func):
 
 def _doc_method(klass, func):
     """Generate the docstring of a method."""
-    argspec = inspect.getfullargspec(func)
+    signature = inspect.signature(func)
+    parameters = list(signature.parameters.values())
     # Remove first 'self' argument.
-    if argspec.args and argspec.args[0] == 'self':
-        del argspec.args[0]
-    args = inspect.formatargspec(*argspec)
+    if parameters and parameters[0].name == 'self':
+        parameters = parameters[1:]
+    args = str(signature.replace(parameters=parameters))
     header = "{klass}.{name}{args}".format(klass=klass.__name__,
                                              name=_name(func),
                                              args=args,
